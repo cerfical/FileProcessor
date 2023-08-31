@@ -1,0 +1,6 @@
+# Per user configuration files
+/*.user
+
+# Build directories
+/build/
+/out/
