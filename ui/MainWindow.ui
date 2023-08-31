@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>mainWindow</class>
- <widget class="QMainWindow" name="mainWindow">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>856</width>
-    <height>279</height>
+    <width>0</width>
+    <height>0</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,14 +26,18 @@
       <widget class="QWidget" name="layoutWidget_1">
        <layout class="QVBoxLayout" name="verticalLayout_1">
         <item>
-         <widget class="QPlainTextEdit" name="plainTextEdit_1"/>
+         <widget class="QPlainTextEdit" name="loadedText">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_1">
           <item>
-           <widget class="QLabel" name="label_2">
+           <widget class="QLabel" name="loadedFile">
             <property name="text">
-             <string>unnamed.txt</string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -51,9 +55,9 @@
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_1">
+           <widget class="QPushButton" name="loadButton">
             <property name="text">
-             <string>Загрузить из файла</string>
+             <string>&amp;Load file</string>
             </property>
            </widget>
           </item>
@@ -64,14 +68,21 @@
       <widget class="QWidget" name="layoutWidget_2">
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
-         <widget class="QPlainTextEdit" name="plainTextEdit_2"/>
+         <widget class="QPlainTextEdit" name="processedText">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
-           <widget class="QPushButton" name="pushButton_2">
+           <widget class="QPushButton" name="saveButton">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
-             <string>Сохранить в файл</string>
+             <string>&amp;Save file</string>
             </property>
            </widget>
           </item>
@@ -89,9 +100,9 @@
            </spacer>
           </item>
           <item>
-           <widget class="QLabel" name="label_3">
+           <widget class="QLabel" name="savedFile">
             <property name="text">
-             <string>unnamed.txt</string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -101,7 +112,7 @@
       </widget>
       <widget class="QGroupBox" name="groupBox_1">
        <property name="title">
-        <string>Опции</string>
+        <string>Options</string>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
@@ -109,45 +120,22 @@
           <item row="0" column="0">
            <widget class="QLabel" name="label_1">
             <property name="text">
-             <string>Группировка:</string>
+             <string>&amp;Group by:</string>
+            </property>
+            <property name="buddy">
+             <cstring>groupPolicy</cstring>
             </property>
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QComboBox" name="comboBox_1">
-            <item>
-             <property name="text">
-              <string>Без группировки</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>По расстоянию</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>По имени</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>По времени создания</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>По типу</string>
-             </property>
-            </item>
-           </widget>
+           <widget class="QComboBox" name="groupPolicy"/>
           </item>
          </layout>
         </item>
         <item>
-         <widget class="QCheckBox" name="checkBox_1">
+         <widget class="QCheckBox" name="enableSort">
           <property name="text">
-           <string>Сортировка внутри групп</string>
+           <string>Sort objects inside groups</string>
           </property>
          </widget>
         </item>
@@ -170,11 +158,118 @@
     </item>
    </layout>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <tabstops>
-  <tabstop>pushButton_2</tabstop>
+  <tabstop>loadedText</tabstop>
+  <tabstop>processedText</tabstop>
+  <tabstop>loadButton</tabstop>
+  <tabstop>saveButton</tabstop>
+  <tabstop>groupPolicy</tabstop>
+  <tabstop>enableSort</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>loadedText</sender>
+   <signal>textChanged()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>processFile()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>150</x>
+     <y>96</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>185</x>
+     <y>171</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>loadButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>loadFile()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>99</x>
+     <y>142</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>127</x>
+     <y>171</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>groupPolicy</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>processFile()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>539</x>
+     <y>63</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>597</x>
+     <y>171</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>saveButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>saveFile()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>233</x>
+     <y>151</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>356</x>
+     <y>171</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>enableSort</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>processFile()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>517</x>
+     <y>96</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>597</x>
+     <y>171</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>processedText</sender>
+   <signal>textChanged()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>enableSave()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>313</x>
+     <y>76</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>326</x>
+     <y>166</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>processFile()</slot>
+  <slot>loadFile()</slot>
+  <slot>saveFile()</slot>
+  <slot>enableSave()</slot>
+ </slots>
 </ui>
