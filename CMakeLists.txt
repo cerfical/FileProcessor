@@ -1,9 +1,11 @@
 cmake_minimum_required(VERSION 3.5)
 
 # Basic project setup
-project(FileProcessor VERSION 0.1 LANGUAGES CXX)
+project(FileProcessor VERSION 0.2 LANGUAGES CXX)
 
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
+
+list(APPEND CMAKE_AUTOUIC_SEARCH_PATHS "ui/")
 qt_standard_project_setup()
 
 qt_add_executable(FileProcessor WIN32
@@ -11,8 +13,11 @@ qt_add_executable(FileProcessor WIN32
 
 	"include/MainWindow.hpp"
 	"src/MainWindow.cpp"
+
+	"ui/MainWindow.ui"
 )
 
+target_compile_features(FileProcessor PRIVATE cxx_std_20)
 target_include_directories(FileProcessor PRIVATE
 	"include/"
 )
