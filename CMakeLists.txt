@@ -12,6 +12,8 @@ qt_add_executable(FileProcessor WIN32
 	"app/main.cpp"
 
 	"include/MainWindow.hpp"
+	"include/ObjectInfo.hpp"
+
 	"src/MainWindow.cpp"
 
 	"ui/MainWindow.ui"

@@ -1,6 +1,8 @@
 #ifndef MAINWINDOW_HPP
 #define MAINWINDOW_HPP
 
+#include "ObjectInfo.hpp"
+
 #include <QMainWindow>
 #include <QList>
 
@@ -26,32 +28,17 @@ private slots:
 
 private:
 	/** @{ */
-	enum GroupPolicy {
-		None,
-		ByType,
-		ByName,
-		ByCreationTime,
-		ByDistance
-	};
-
-	struct ObjectInfo {
-		QString name;
-		QString type;
-		QString x, y;
-		QString time;
-	};
-	/** @} */
-
-	/** @{ */
+	static QString stringifyObjectList(const QString& caption, const QList<ObjectInfo>& objects);
 	static bool containsCyrillic(const QString& str);
 	/** @} */
 
 	/** @{ */
 	QList<ObjectInfo> parseObjectList();
+	void sortByName(QList<ObjectInfo>& objects);
 
 	void groupByType();
 	void groupByName();
-	void groupByCreationTime();
+	void groupByTime();
 	void groupByDistance();
 	/** @} */
 

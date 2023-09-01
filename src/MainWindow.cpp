@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
 	const auto groupPolicy = m_ui->groupPolicy;
 	groupPolicy->addItem(tr("Type"), GroupPolicy::ByType);
 	groupPolicy->addItem(tr("Name"), GroupPolicy::ByName);
-	groupPolicy->addItem(tr("Creation time"), GroupPolicy::ByCreationTime);
+	groupPolicy->addItem(tr("Time"), GroupPolicy::ByTime);
 	groupPolicy->addItem(tr("Distance"), GroupPolicy::ByDistance);
 	groupPolicy->addItem(tr("None"), GroupPolicy::None);
 
@@ -30,13 +30,31 @@ MainWindow::~MainWindow() {
 }
 
 
+QString MainWindow::stringifyObjectList(const QString& caption, const QList<ObjectInfo>& objects) {
+	QString str;
+
+	if(!objects.isEmpty()) {
+		str += caption + " {\n";
+		for(const auto& obj : objects) {
+			str += ' ' + obj.name + ' ';
+			str += obj.x + ' ' + obj.y + ' ';
+			str += obj.type + ' ';
+			str += obj.time + '\n';
+		}
+		str += "}\n";
+	}
+
+	return str;
+}
+
+
 bool MainWindow::containsCyrillic(const QString& str) {
 	static QRegularExpression regex("[а-яА-Я]");
 	return str.contains(regex);
 }
 
 
-QList<MainWindow::ObjectInfo> MainWindow::parseObjectList() {
+QList<ObjectInfo> MainWindow::parseObjectList() {
 	// получить загруженный ранее список объектов в текстовой форме
 	auto text = m_ui->loadedText->toPlainText();
 	QTextStream in(&text);
@@ -75,49 +93,70 @@ QList<MainWindow::ObjectInfo> MainWindow::parseObjectList() {
 }
 
 
-void MainWindow::groupByType() {
+void MainWindow::sortByName(QList<ObjectInfo>& objects) {
+	// sort objects by name if in-group sorting is enabled
+	if(m_ui->enableSort->isChecked()) {
+		std::ranges::sort(objects, [](const ObjectInfo& lhs, const ObjectInfo& rhs) {
+			return lhs.name < rhs.name;
+		});
+	}
+}
 
+
+void MainWindow::groupByType() {
+	static const auto otherType = tr("Other");
+
+	// разбить объекты на группы в зависимости от их типов
+	QMap<QString, QList<ObjectInfo>> groups;
+	for(const auto& obj : m_objects) {
+		groups[obj.type].append(obj);
+	}
+
+	// распечатать группы объектов, которые имеют достаточный размер
+	QString str;
+	for(auto it = groups.begin(); it != groups.end(); it++) {
+		if(it.key() != otherType ) {
+			const auto n = m_ui->typedGroupSize->value();
+			if(it.value().size() >= n) {
+				sortByName(it.value());
+				str += stringifyObjectList(it.key(), it.value());
+			} else {
+				groups[otherType].append(std::move(it.value()));
+			}
+		}
+	}
+
+	// остальные объекты вынести в отдельную группу
+	auto& otherObjects = groups[otherType];
+
+	sortByName(otherObjects);
+	str += stringifyObjectList(otherType, otherObjects);
+
+	m_ui->processedText->setPlainText(str);
 }
 
 void MainWindow::groupByName() {
 	// выполнить группировку по первой букве имени объекта
-	QMap<QString, QList<ObjectInfo>> objectGroups;
+	QMap<QString, QList<ObjectInfo>> groups;
 	for(const auto& obj : m_objects) {
 		const auto groupName = obj.name.front();
 		if(containsCyrillic(groupName)) {
-			objectGroups[groupName].append(obj);
+			groups[groupName].append(obj);
 		} else {
-			objectGroups["#"].append(obj);
+			groups["#"].append(obj);
 		}
 	}
 
-	QString outStr;
-	QTextStream out(&outStr);
-
-	for(auto it = objectGroups.begin(); it != objectGroups.end(); it++) {
-		// при необходимости отсортировать объекты внутри группы
-		auto& objects = it.value();
-		if(m_ui->enableSort->isChecked()) {
-			std::ranges::sort(objects, [](const ObjectInfo& lhs, const ObjectInfo& rhs) {
-				return lhs.name < rhs.name;
-			});
-		}
-
-		// вывести все объекты в группе
-		out << it.key() << " {\n";
-		for(const auto& obj : objects) {
-			out << ' ' << obj.name << ' ';
-			out << obj.x << ' ' << obj.y << ' ';
-			out << obj.type << ' ';
-			out << obj.time << '\n';
-		}
-		out << "}\n";
+	// вывести на экран разбитый на группы список объектов в алфавитном порядке
+	QString str;
+	for(auto it = groups.begin(); it != groups.end(); it++) {
+		sortByName(it.value());
+		str += stringifyObjectList(it.key(), it.value());
 	}
-
-	m_ui->processedText->setPlainText(outStr);
+	m_ui->processedText->setPlainText(str);
 }
 
-void MainWindow::groupByCreationTime() {
+void MainWindow::groupByTime() {
 
 }
 
@@ -168,8 +207,8 @@ void MainWindow::processFile() {
 			groupByName();
 			break;
 		}
-		case ByCreationTime: {
-			groupByCreationTime();
+		case ByTime: {
+			groupByTime();
 			break;
 		}
 		case ByDistance: {
