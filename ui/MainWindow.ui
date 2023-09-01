@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>0</width>
-    <height>0</height>
+    <width>473</width>
+    <height>147</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -176,12 +176,12 @@
    <slot>processFile()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>150</x>
+     <x>115</x>
      <y>96</y>
     </hint>
     <hint type="destinationlabel">
      <x>185</x>
-     <y>171</y>
+     <y>146</y>
     </hint>
    </hints>
   </connection>
@@ -192,12 +192,12 @@
    <slot>loadFile()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>99</x>
-     <y>142</y>
+     <x>114</x>
+     <y>133</y>
     </hint>
     <hint type="destinationlabel">
      <x>127</x>
-     <y>171</y>
+     <y>146</y>
     </hint>
    </hints>
   </connection>
@@ -208,12 +208,12 @@
    <slot>processFile()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>539</x>
-     <y>63</y>
+     <x>446</x>
+     <y>76</y>
     </hint>
     <hint type="destinationlabel">
-     <x>597</x>
-     <y>171</y>
+     <x>472</x>
+     <y>146</y>
     </hint>
    </hints>
   </connection>
@@ -224,12 +224,12 @@
    <slot>saveFile()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>233</x>
-     <y>151</y>
+     <x>203</x>
+     <y>133</y>
     </hint>
     <hint type="destinationlabel">
      <x>356</x>
-     <y>171</y>
+     <y>146</y>
     </hint>
    </hints>
   </connection>
@@ -240,12 +240,12 @@
    <slot>processFile()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>517</x>
-     <y>96</y>
+     <x>447</x>
+     <y>110</y>
     </hint>
     <hint type="destinationlabel">
-     <x>597</x>
-     <y>171</y>
+     <x>472</x>
+     <y>146</y>
     </hint>
    </hints>
   </connection>
@@ -253,15 +253,15 @@
    <sender>processedText</sender>
    <signal>textChanged()</signal>
    <receiver>MainWindow</receiver>
-   <slot>enableSave()</slot>
+   <slot>toggleSaveButton()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>313</x>
-     <y>76</y>
+     <x>171</x>
+     <y>62</y>
     </hint>
     <hint type="destinationlabel">
-     <x>326</x>
-     <y>166</y>
+     <x>94</x>
+     <y>142</y>
     </hint>
    </hints>
   </connection>
@@ -270,6 +270,6 @@
   <slot>processFile()</slot>
   <slot>loadFile()</slot>
   <slot>saveFile()</slot>
-  <slot>enableSave()</slot>
+  <slot>toggleSaveButton()</slot>
  </slots>
 </ui>
