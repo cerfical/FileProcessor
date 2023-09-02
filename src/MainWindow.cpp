@@ -83,15 +83,20 @@ void MainWindow::displayGroups(QMap<QString, QList<ObjectInfo>>& groups, SortPol
 }
 
 void MainWindow::sortGroup(QList<ObjectInfo>& objects, SortPolicy sort) {
-	// при необходимости отсортировать объекты относительно выбранного ключа
-	if(m_ui->enableSort->isChecked()) {
+	if(m_ui->sortingEnabled->isChecked()) {
 		// в зависимости от ключа сортировки выбрать соотвествующую функцию сравнения
 		bool (*compFunc)(const ObjectInfo&, const ObjectInfo&) = nullptr;
 		switch(sort) {
 			case SortPolicy::ByName: {
-				compFunc = [](const auto& lhs, const auto& rhs) {
-					return lhs.name < rhs.name;
-				};
+				if(m_ui->caseSensitive->isChecked()) {
+					compFunc = [](const auto& lhs, const auto& rhs) {
+						return lhs.name < rhs.name;
+					};
+				} else {
+					compFunc = [](const auto& lhs, const auto& rhs) {
+						return lhs.name.toLower() < rhs.name.toLower();
+					};
+				}
 				break;
 			}
 			case SortPolicy::ByTime: {
@@ -113,16 +118,19 @@ void MainWindow::sortGroup(QList<ObjectInfo>& objects, SortPolicy sort) {
 
 
 void MainWindow::groupByType() {
+	const auto isCaseSensitive = m_ui->caseSensitive->isChecked();;
+	const auto n = m_ui->typedGroupSize->value();
+
 	// разбить объекты на группы в зависимости от типа
 	QMap<QString, QList<ObjectInfo>> groups;
 	for(const auto& obj : m_objects) {
-		groups[obj.type].append(obj);
+		groups[isCaseSensitive ? obj.type : obj.type.toLower()].append(obj);
 	}
 
 	// вынести объекты из групп, имеющих слишком маленький размер, в отдельную группу
-	auto& others = groups[tr("Other")];
+	auto& others = groups[isCaseSensitive ? tr("Other") : tr("Other").toLower()];
 	for(auto it = groups.begin(); it != groups.end(); it++) {
-		const auto n = m_ui->typedGroupSize->value();
+		// если группа не является группой Разное и при этом имеет недостаточный размер, либо имя группы пустое
 		if((&others != &it.value() && it.value().size() < n) || it.key().isEmpty()) {
 			others.append(it.value());
 			it.value().clear();
@@ -133,11 +141,21 @@ void MainWindow::groupByType() {
 }
 
 void MainWindow::groupByName() {
-	// выполнить группировку по первой букве имени объекта
+	// выполнить группировку по первой букве имени объекта:
 	QMap<QString, QList<ObjectInfo>> groups;
 	for(const auto& obj : m_objects) {
-		const auto groupName =
-			!obj.name.isEmpty() && containsCyrillic(obj.name.front()) ? obj.name.front() : '#';
+		QString groupName;
+		if(!obj.name.isEmpty() && containsCyrillic(obj.name.front())) {
+			// если имя не пустое и начинается с кириллической буквы, используем ее для имени группы
+			groupName = obj.name.front();
+			if(!m_ui->caseSensitive->isChecked()) {
+				groupName = groupName.toLower();
+			}
+		} else {
+			// иначе используем символ решетки
+			groupName = "#";
+		}
+
 		groups[groupName].append(obj);
 	}
 

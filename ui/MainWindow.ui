@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>473</width>
-    <height>147</height>
+    <width>773</width>
+    <height>254</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,7 +24,7 @@
        <bool>false</bool>
       </property>
       <widget class="QWidget" name="layoutWidget_1">
-       <layout class="QVBoxLayout" name="verticalLayout_1">
+       <layout class="QVBoxLayout" name="textLoadBox">
         <item>
          <widget class="QPlainTextEdit" name="loadedText">
           <property name="readOnly">
@@ -66,7 +66,7 @@
        </layout>
       </widget>
       <widget class="QWidget" name="layoutWidget_2">
-       <layout class="QVBoxLayout" name="verticalLayout_2">
+       <layout class="QVBoxLayout" name="textSaveBox">
         <item>
          <widget class="QPlainTextEdit" name="processedText">
           <property name="readOnly">
@@ -110,7 +110,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QGroupBox" name="groupBox_1">
+      <widget class="QGroupBox" name="optionsGroup">
        <property name="title">
         <string>Options</string>
        </property>
@@ -145,14 +145,30 @@
             <property name="minimum">
              <number>1</number>
             </property>
+            <property name="maximum">
+             <number>2147483647</number>
+            </property>
            </widget>
           </item>
          </layout>
         </item>
         <item>
-         <widget class="QCheckBox" name="enableSort">
+         <widget class="QCheckBox" name="sortingEnabled">
           <property name="text">
            <string>Sort objects inside groups</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="caseSensitive">
+          <property name="text">
+           <string>Case sensitive</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -183,7 +199,7 @@
   <tabstop>saveButton</tabstop>
   <tabstop>groupPolicy</tabstop>
   <tabstop>typedGroupSize</tabstop>
-  <tabstop>enableSort</tabstop>
+  <tabstop>sortingEnabled</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -210,8 +226,8 @@
    <slot>loadFile()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>114</x>
-     <y>133</y>
+     <x>261</x>
+     <y>240</y>
     </hint>
     <hint type="destinationlabel">
      <x>127</x>
@@ -226,7 +242,7 @@
    <slot>processText()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>446</x>
+     <x>740</x>
      <y>60</y>
     </hint>
     <hint type="destinationlabel">
@@ -242,8 +258,8 @@
    <slot>saveFile()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>203</x>
-     <y>133</y>
+     <x>350</x>
+     <y>240</y>
     </hint>
     <hint type="destinationlabel">
      <x>356</x>
@@ -252,14 +268,14 @@
    </hints>
   </connection>
   <connection>
-   <sender>enableSort</sender>
+   <sender>sortingEnabled</sender>
    <signal>toggled(bool)</signal>
    <receiver>MainWindow</receiver>
    <slot>processText()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>447</x>
-     <y>110</y>
+     <x>741</x>
+     <y>142</y>
     </hint>
     <hint type="destinationlabel">
      <x>472</x>
@@ -274,7 +290,7 @@
    <slot>toggleSaveButton()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>171</x>
+     <x>318</x>
      <y>62</y>
     </hint>
     <hint type="destinationlabel">
@@ -290,12 +306,28 @@
    <slot>processText()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>380</x>
-     <y>79</y>
+     <x>674</x>
+     <y>95</y>
     </hint>
     <hint type="destinationlabel">
      <x>324</x>
      <y>139</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>caseSensitive</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>processText()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>597</x>
+     <y>162</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>582</x>
+     <y>250</y>
     </hint>
    </hints>
   </connection>
