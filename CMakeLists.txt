@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 
 # Basic project setup
-project(FileProcessor VERSION 0.2 LANGUAGES CXX)
+project(FileProcessor VERSION 0.5 LANGUAGES CXX)
 
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 
