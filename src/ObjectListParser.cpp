@@ -14,11 +14,11 @@ bool ObjectListParser::isInt(const QString& str) {
 }
 
 bool ObjectListParser::parse(QList<Object>& objects) {
-	static QRegularExpression wsRegex("\\s+");
+	const static QRegularExpression wsRegex("\\s+");
 
 	bool groupStarted = false, result = true;
 	while((m_input.skipWhiteSpace(), !m_input.atEnd())) {
-		const auto words = m_input.readLine().split(wsRegex);
+		const auto words = m_input.readLine().split(wsRegex, Qt::SkipEmptyParts);
 
 		// проверить, является ли считанная строка маркером конца группы
 		if(words[0] == "}") {
@@ -54,5 +54,7 @@ bool ObjectListParser::parse(QList<Object>& objects) {
 		objects.emplaceBack(name, type, x, y, time);
 	}
 
+	// группа должна быть закрытой
+	result = result && !groupStarted;
 	return result;
 }

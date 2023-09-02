@@ -29,7 +29,7 @@ MainWindow::~MainWindow() {
 
 
 bool MainWindow::containsCyrillic(const QString& str) {
-	static QRegularExpression regex("[а-яА-Я]");
+	const static QRegularExpression regex("[а-яА-Я]");
 	return str.contains(regex);
 }
 
@@ -191,8 +191,16 @@ void MainWindow::saveFile() {
 void MainWindow::processText() {
 	const auto groupPoilcy = m_ui->groupPolicy->currentData().toInt();
 	if(m_objects.isEmpty()) {
-		ObjectListParser(m_ui->loadedText->toPlainText()).parse(m_objects);
+		// если список объектов еще не был получен, пропарсить загруженный файл и отобразить результат в статус баре
+		if(ObjectListParser(m_ui->loadedText->toPlainText()).parse(m_objects)) {
+			m_ui->statusBar->setStyleSheet("QStatusBar { color:green; }");
+			m_ui->statusBar->showMessage(tr("OK"));
+		} else {
+			m_ui->statusBar->setStyleSheet("QStatusBar { color:red; }");
+			m_ui->statusBar->showMessage(tr("Invalid file format"));
+		}
 	}
+
 	switch(groupPoilcy) {
 		case GroupPolicy::ByType: {
 			groupByType();
