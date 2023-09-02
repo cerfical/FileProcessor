@@ -94,6 +94,18 @@ void MainWindow::sortGroup(QList<ObjectInfo>& objects, SortPolicy sort) {
 				};
 				break;
 			}
+			case SortPolicy::ByTime: {
+				compFunc = [](const auto& lhs, const auto& rhs) {
+					return lhs.time.toLongLong() < rhs.time.toLongLong();
+				};
+				break;
+			}
+			case SortPolicy::ByDistance: {
+				compFunc = [](const auto& lhs, const auto& rhs) {
+					return lhs.distance() < rhs.distance();
+				};
+				break;
+			}
 		}
 		std::ranges::sort(objects, compFunc);
 	}
@@ -133,11 +145,23 @@ void MainWindow::groupByName() {
 }
 
 void MainWindow::groupByTime() {
+	// сгруппировать объекты по времени их создания
+	QMap<QString, QList<ObjectInfo>> groups;
+	for(const auto& obj : m_objects) {
+		groups[stringify(obj.relativeTime())].append(obj);
+	}
 
+	displayGroups(groups, SortPolicy::ByTime);
 }
 
 void MainWindow::groupByDistance() {
+	// сгруппировать объекты по их относительному расстоянию от начала координат
+	QMap<QString, QList<ObjectInfo>> groups;
+	for(const auto& obj : m_objects) {
+		groups[stringify(obj.relativeDistance())].append(obj);
+	}
 
+	displayGroups(groups, SortPolicy::ByDistance);
 }
 
 

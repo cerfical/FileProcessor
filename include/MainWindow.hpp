@@ -33,7 +33,9 @@ private slots:
 private:
 	/** @{ */
 	enum class SortPolicy {
-		ByName
+		ByName,
+		ByDistance,
+		ByTime
 	};
 
 	enum GroupPolicy {
