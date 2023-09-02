@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_HPP
 #define MAINWINDOW_HPP
 
-#include "ObjectInfo.hpp"
+#include "Object.hpp"
 
 #include <QMainWindow>
 #include <QMap>
@@ -52,10 +52,8 @@ private:
 	/** @} */
 
 	/** @{ */
-	QList<ObjectInfo> parseObjectList();
-
-	void displayGroups(QMap<QString, QList<ObjectInfo>>& groups, SortPolicy sort);
-	void sortGroup(QList<ObjectInfo>& objects, SortPolicy sort);
+	void displayGroups(QMap<QString, QList<Object>>& groups, SortPolicy sort);
+	void sortGroup(QList<Object>& objects, SortPolicy sort);
 
 	void groupByType();
 	void groupByName();
@@ -63,7 +61,7 @@ private:
 	void groupByDistance();
 	/** @} */
 
-	QList<ObjectInfo> m_objects;
+	QList<Object> m_objects;
 	Ui::MainWindow *m_ui = nullptr;
 };
 

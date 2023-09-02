@@ -1,5 +1,5 @@
-#ifndef OBJECTINFO_HPP
-#define OBJECTINFO_HPP
+#ifndef OBJECT_HPP
+#define OBJECT_HPP
 
 #include "RelativeTime.hpp"
 #include "RelativeDistance.hpp"
@@ -8,7 +8,7 @@
 #include <QList>
 
 
-struct ObjectInfo {
+struct Object {
 	/** @{ */
 	RelativeTime relativeTime() const;
 	/** @} */
@@ -25,9 +25,9 @@ struct ObjectInfo {
 };
 
 
-QString stringify(const QList<ObjectInfo>& objects, const QString& caption);
+QString stringify(const QList<Object>& objects, const QString& caption);
 
-QString stringify(const ObjectInfo& obj);
+QString stringify(const Object& obj);
 
 
 #endif

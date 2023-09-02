@@ -1,8 +1,9 @@
-#include "ObjectInfo.hpp"
+#include "Object.hpp"
+
 #include <QDateTime>
 #include <QtMath>
 
-RelativeTime ObjectInfo::relativeTime() const {
+RelativeTime Object::relativeTime() const {
 	const auto date = QDateTime::fromMSecsSinceEpoch(time.toLongLong()).date();
 	const auto today = QDate::currentDate();
 
@@ -30,7 +31,7 @@ RelativeTime ObjectInfo::relativeTime() const {
 }
 
 
-RelativeDistance ObjectInfo::relativeDistance() const {
+RelativeDistance Object::relativeDistance() const {
 	const auto d = distance();
 	if(d < 100) {
 		return RelativeDistance::Under100;
@@ -47,12 +48,12 @@ RelativeDistance ObjectInfo::relativeDistance() const {
 	return RelativeDistance::TooFar;
 }
 
-qreal ObjectInfo::distance() const {
+qreal Object::distance() const {
 	return qSqrt(qPow(x.toDouble(), 2) + qPow(y.toDouble(), 2));
 }
 
 
-QString stringify(const QList<ObjectInfo>& objects, const QString& caption) {
+QString stringify(const QList<Object>& objects, const QString& caption) {
 	QString str;
 	str += caption + " {\n";
 	for(const auto& obj : objects) {
@@ -62,7 +63,7 @@ QString stringify(const QList<ObjectInfo>& objects, const QString& caption) {
 	return str;
 }
 
-QString stringify(const ObjectInfo& obj) {
+QString stringify(const Object& obj) {
 	QString str;
 
 	str += obj.name + ' ';

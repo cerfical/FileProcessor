@@ -1,4 +1,6 @@
 #include "MainWindow.hpp"
+
+#include "ObjectListParser.hpp"
 #include "ui_MainWindow.h"
 
 #include <QRegularExpression>
@@ -32,45 +34,7 @@ bool MainWindow::containsCyrillic(const QString& str) {
 }
 
 
-QList<ObjectInfo> MainWindow::parseObjectList() {
-	// получить загруженный ранее список объектов в текстовой форме
-	auto text = m_ui->loadedText->toPlainText();
-	QTextStream in(&text);
-
-	QList<ObjectInfo> objects;
-	ObjectInfo obj;
-
-	QString str;
-	bool groupStarted = false;
-
-	while((in.skipWhiteSpace(), !in.atEnd())) {
-		in >> str;
-
-		// проверить, является ли считанная строка маркером конца группы
-		if(str == "}" && groupStarted) {
-			groupStarted = false;
-			continue;
-		}
-
-		obj.name = str; // сохранить имя объекта
-		in >> str;
-
-		// проверить, является ли считанная строка маркером начала группы
-		if(str == "{" && !groupStarted) {
-			groupStarted = true;
-			continue;
-		}
-		obj.x = str; // сохранить x-координату
-
-		// считать описание объекта и сохранить его в списке
-		in >> obj.y >> obj.type >> obj.time;
-		objects.append(obj);
-	}
-
-	return objects;
-}
-
-void MainWindow::displayGroups(QMap<QString, QList<ObjectInfo>>& groups, SortPolicy sort) {	
+void MainWindow::displayGroups(QMap<QString, QList<Object>>& groups, SortPolicy sort) {
 	// преобразовать разбитые на группы объекты в строку и отобразить результат
 	QString str;
 	for(auto it = groups.begin(); it != groups.end(); it++) {
@@ -82,10 +46,10 @@ void MainWindow::displayGroups(QMap<QString, QList<ObjectInfo>>& groups, SortPol
 	m_ui->processedText->setPlainText(str);
 }
 
-void MainWindow::sortGroup(QList<ObjectInfo>& objects, SortPolicy sort) {
+void MainWindow::sortGroup(QList<Object>& objects, SortPolicy sort) {
 	if(m_ui->sortingEnabled->isChecked()) {
 		// в зависимости от ключа сортировки выбрать соотвествующую функцию сравнения
-		bool (*compFunc)(const ObjectInfo&, const ObjectInfo&) = nullptr;
+		bool (*compFunc)(const Object&, const Object&) = nullptr;
 		switch(sort) {
 			case SortPolicy::ByName: {
 				if(m_ui->caseSensitive->isChecked()) {
@@ -122,7 +86,7 @@ void MainWindow::groupByType() {
 	const auto n = m_ui->typedGroupSize->value();
 
 	// разбить объекты на группы в зависимости от типа
-	QMap<QString, QList<ObjectInfo>> groups;
+	QMap<QString, QList<Object>> groups;
 	for(const auto& obj : m_objects) {
 		groups[isCaseSensitive ? obj.type : obj.type.toLower()].append(obj);
 	}
@@ -142,7 +106,7 @@ void MainWindow::groupByType() {
 
 void MainWindow::groupByName() {
 	// выполнить группировку по первой букве имени объекта:
-	QMap<QString, QList<ObjectInfo>> groups;
+	QMap<QString, QList<Object>> groups;
 	for(const auto& obj : m_objects) {
 		QString groupName;
 		if(!obj.name.isEmpty() && containsCyrillic(obj.name.front())) {
@@ -164,7 +128,7 @@ void MainWindow::groupByName() {
 
 void MainWindow::groupByTime() {
 	// сгруппировать объекты по времени их создания
-	QMap<QString, QList<ObjectInfo>> groups;
+	QMap<QString, QList<Object>> groups;
 	for(const auto& obj : m_objects) {
 		groups[stringify(obj.relativeTime())].append(obj);
 	}
@@ -174,7 +138,7 @@ void MainWindow::groupByTime() {
 
 void MainWindow::groupByDistance() {
 	// сгруппировать объекты по их относительному расстоянию от начала координат
-	QMap<QString, QList<ObjectInfo>> groups;
+	QMap<QString, QList<Object>> groups;
 	for(const auto& obj : m_objects) {
 		groups[stringify(obj.relativeDistance())].append(obj);
 	}
@@ -225,31 +189,34 @@ void MainWindow::saveFile() {
 
 
 void MainWindow::processText() {
-	// выполнить группирующее действие и отобразить результат
 	const auto groupPoilcy = m_ui->groupPolicy->currentData().toInt();
-	if(groupPoilcy == None) {
-		m_ui->processedText->setPlainText(m_ui->loadedText->toPlainText());
-		return;
-	}
-
 	if(m_objects.isEmpty()) {
-		m_objects = parseObjectList();
+		ObjectListParser(m_ui->loadedText->toPlainText()).parse(m_objects);
 	}
 	switch(groupPoilcy) {
-		case ByType: {
+		case GroupPolicy::ByType: {
 			groupByType();
 			break;
 		}
-		case ByName: {
+		case GroupPolicy::ByName: {
 			groupByName();
 			break;
 		}
-		case ByTime: {
+		case GroupPolicy::ByTime: {
 			groupByTime();
 			break;
 		}
-		case ByDistance: {
+		case GroupPolicy::ByDistance: {
 			groupByDistance();
+			break;
+		}
+		case GroupPolicy::None: {
+			// отобразить объекты в произвольном порядке без какой либо группировки
+			QString str;
+			for(const auto& obj : m_objects) {
+				str += stringify(obj) + '\n';
+			}
+			m_ui->processedText->setPlainText(str);
 			break;
 		}
 	}

@@ -20,8 +20,11 @@ qt_add_executable(FileProcessor WIN32
 	"include/RelativeDistance.hpp"
 	"src/RelativeDistance.cpp"
 
-	"include/ObjectInfo.hpp"
-	"src/ObjectInfo.cpp"
+	"include/Object.hpp"
+	"src/Object.cpp"
+
+	"include/ObjectListParser.hpp"
+	"src/ObjectListParser.cpp"
 
 	"ui/MainWindow.ui"
 )
