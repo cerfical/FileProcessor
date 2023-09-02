@@ -4,9 +4,11 @@
 #include "ObjectInfo.hpp"
 
 #include <QMainWindow>
-#include <QList>
+#include <QMap>
+
 
 namespace Ui { class MainWindow; }
+
 
 class MainWindow : public QMainWindow {
 	Q_OBJECT
@@ -20,21 +22,38 @@ public:
 private slots:
 	/** @{ */
 	void loadFile();
-	void processFile();
 	void saveFile();
+
+	void processText();
+	void parseText();
 
 	void toggleSaveButton();
 	/** @} */
 
 private:
 	/** @{ */
-	static QString stringifyObjectList(const QString& caption, const QList<ObjectInfo>& objects);
+	enum class SortPolicy {
+		ByName
+	};
+
+	enum GroupPolicy {
+		None,
+		ByType,
+		ByName,
+		ByTime,
+		ByDistance
+	};
+	/** @} */
+
+	/** @{ */
 	static bool containsCyrillic(const QString& str);
 	/** @} */
 
 	/** @{ */
 	QList<ObjectInfo> parseObjectList();
-	void sortByName(QList<ObjectInfo>& objects);
+
+	void displayGroups(QMap<QString, QList<ObjectInfo>>& groups, SortPolicy sort);
+	void sortGroup(QList<ObjectInfo>& objects, SortPolicy sort);
 
 	void groupByType();
 	void groupByName();

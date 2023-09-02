@@ -12,9 +12,16 @@ qt_add_executable(FileProcessor WIN32
 	"app/main.cpp"
 
 	"include/MainWindow.hpp"
-	"include/ObjectInfo.hpp"
-
 	"src/MainWindow.cpp"
+
+	"include/RelativeTime.hpp"
+	"src/RelativeTime.cpp"
+
+	"include/RelativeDistance.hpp"
+	"src/RelativeDistance.cpp"
+
+	"include/ObjectInfo.hpp"
+	"src/ObjectInfo.cpp"
 
 	"ui/MainWindow.ui"
 )
