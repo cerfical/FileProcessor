@@ -1,6 +1,9 @@
+# Visual Studio cache
+/.vs
+
 # Per user configuration files
 /*.user
+/CMakeSettings.json
 
 # Build directories
 /build/
-/out/
